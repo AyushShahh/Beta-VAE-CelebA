@@ -4,3 +4,8 @@ torchvision
 kagglehub
 tensorboard
 gradio
+Pillow
+tqdm
+matplotlib
+safetensors
+huggingface_hub

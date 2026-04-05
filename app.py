@@ -4,6 +4,7 @@ from torchvision import transforms
 from PIL import Image
 import gradio as gr
 from architecture import CelebAVAE
+from safetensors.torch import load_file
 
 # Setup device and model
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -13,7 +14,9 @@ model = CelebAVAE(latent_dim=32).to(device)
 checkpoint_path = 'checkpoints/final_model.pth'
 if os.path.exists(checkpoint_path):
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=True)
-    model.load_state_dict(checkpoint)
+if checkpoint_path.endswith('.safetensors'):
+    checkpoint = load_file(checkpoint_path, device=device)
+model.load_state_dict(checkpoint)
 model.eval()
 
 # Load available directions
@@ -108,7 +111,7 @@ with gr.Blocks(title="Beta-VAE Latent Editing") as demo:
             gr.Markdown("### Edit Dimensions")
             feature_dropdown = gr.Dropdown(choices=available_directions, value="None", label="Feature to Edit")
             strength_slider = gr.Slider(minimum=-3.0, maximum=3.0, value=0.0, step=0.1, label="Edit Strength")
-            edit_button = gr.Button("Apply Edit")
+            gr.Markdown("Positive values increase the attribute, while negative values reduce it.")
             
         with gr.Column():
             gr.Markdown("### Original (Left) & Reconstruction (Right)")
@@ -131,18 +134,13 @@ with gr.Blocks(title="Beta-VAE Latent Editing") as demo:
     )
 
     # 2. Edit the image using the saved latent state.
-    # feature_dropdown.change(
-    #     fn=edit_latent,
-    #     inputs=[latent_state, feature_dropdown, strength_slider],
-    #     outputs=[edited_output]
-    # )
+    feature_dropdown.change(
+        fn=edit_latent,
+        inputs=[latent_state, feature_dropdown, strength_slider],
+        outputs=[edited_output]
+    )
     
-    # strength_slider.change(
-    #     fn=edit_latent,
-    #     inputs=[latent_state, feature_dropdown, strength_slider],
-    #     outputs=[edited_output]
-    # )
-    edit_button.click(
+    strength_slider.change(
         fn=edit_latent,
         inputs=[latent_state, feature_dropdown, strength_slider],
         outputs=[edited_output]
