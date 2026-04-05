@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from dataset import CelebADataset
 from torchvision import transforms
 from torchvision.utils import make_grid
+from safetensors.torch import load_file
 
 
 transform = transforms.Compose([
@@ -14,9 +15,17 @@ transform = transforms.Compose([
 ])
 
 device = 'cuda'
+checkpoint_path = 'checkpoints/checkpoint_epoch200.pth'
 
 model = CelebAVAE(latent_dim=32).to('cuda')
-state_dict = torch.load('checkpoints/checkpoint_epoch200.pth', map_location=device)['model_state_dict']
+if checkpoint_path.endswith('.safetensors'):
+    state_dict = load_file(checkpoint_path, device=device)
+else:
+    checkpoint = torch.load(checkpoint_path, map_location=device)
+    if 'model_state_dict' in checkpoint:
+        state_dict = checkpoint['model_state_dict']
+    else:
+        state_dict = checkpoint
 
 model.load_state_dict(state_dict)
 model.eval()
