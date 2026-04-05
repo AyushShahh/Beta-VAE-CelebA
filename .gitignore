@@ -4,3 +4,4 @@ checkpoints/
 runs/
 dataset/
 directions/
+.cache/
