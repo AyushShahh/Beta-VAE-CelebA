@@ -1,6 +1,10 @@
+"""
+Note: This test was run on 128x128 images so you need to adjust the code if you want to run it on 64x64 images or update the architecture.
+"""
+
 import torch
 import os
-from train import CelebADataset
+from dataset import CelebADataset
 from architecture import CelebAVAE, ELBOLoss
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import utils as vutils
@@ -36,8 +40,8 @@ def main():
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
 
-    dataset = CelebADataset(root_dir=img_dir, start=0, end=7, transform=transform)
-    data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=False, pin_memory=True, num_workers=2, persistent_workers=True, prefetch_factor=1)
+    train_dataset = CelebADataset(root_dir=img_dir, start=0, end=7, transform=transform)
+    data_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False, pin_memory=True, num_workers=2, persistent_workers=True, prefetch_factor=1)
 
     train_preview_batch = next(iter(data_loader))
 

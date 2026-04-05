@@ -4,31 +4,14 @@ from architecture import CelebAVAE, ELBOLoss
 import kagglehub
 from torchvision import transforms
 from torchvision import utils as vutils
-from torch.utils.data import DataLoader, Dataset, random_split
+from torch.utils.data import DataLoader #, random_split
 from torch.utils.tensorboard import SummaryWriter
-from PIL import Image
+# from PIL import Image
 from torch.optim import AdamW
 # from torch.optim.lr_scheduler import CosineAnnealingLR, LinearLR, SequentialLR
 from tqdm import tqdm
 from torch.amp import autocast
-
-class CelebADataset(Dataset):
-    def __init__(self, root_dir, start, end, transform=None):
-        assert end >= start, "End index must be greater or equal than start index"
-        self.root_dir = root_dir
-        self.transform = transform
-        self.image_files = sorted(f for f in os.listdir(root_dir))[start:end+1]
-        
-    def __len__(self):
-        return len(self.image_files)
-        
-    def __getitem__(self, idx):
-        img_name = os.path.join(self.root_dir, self.image_files[idx])
-        with Image.open(img_name) as img:
-            image = img.convert("RGB")
-        if self.transform:
-            image = self.transform(image)
-        return image
+from dataset import CelebADataset
 
 def main():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -57,8 +40,8 @@ def main():
         # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
 
-    dataset = CelebADataset(root_dir=img_dir, start=0, end=182636, transform=transform)
-    data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True, num_workers=4, persistent_workers=True, prefetch_factor=2)
+    train_dataset = CelebADataset(root_dir=img_dir, start=0, end=182636, transform=transform)
+    data_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, pin_memory=True, num_workers=4, persistent_workers=True, prefetch_factor=2)
     val_dataset = CelebADataset(root_dir=img_dir, start=182637, end=202598, transform=transform)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, pin_memory=True, num_workers=4, persistent_workers=True, prefetch_factor=2)
 

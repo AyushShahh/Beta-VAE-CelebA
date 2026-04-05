@@ -1,7 +1,7 @@
 from architecture import CelebAVAE
 import torch
 import matplotlib.pyplot as plt
-from train import CelebADataset
+from dataset import CelebADataset
 from torchvision import transforms
 from torchvision.utils import make_grid
 

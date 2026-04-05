@@ -39,7 +39,7 @@ class CelebAVAE(nn.Module):
         self.latent_dim = latent_dim
 
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=4, stride=2, padding=1, bias=False, padding_mode='reflect'), # 64x64
+            nn.Conv2d(3, 64, kernel_size=4, stride=2, padding=1, bias=False, padding_mode='reflect'),
             nn.GroupNorm(32, 64),
             nn.LeakyReLU(0.2),
             ResBlock(64, 128, stride=2),
