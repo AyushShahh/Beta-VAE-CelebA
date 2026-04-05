@@ -2,9 +2,7 @@
 
 A **β-Variational Autoencoder (β-VAE)** trained on the **CelebA dataset** to learn disentangled latent representations of human faces. The model can generate faces, reconstruct images, and enable controllable latent editing of facial attributes such as smile, pose, and face shape.
 
-<video src="https://github.com/AyushShahh/Beta-VAE-CelebA/blob/main/assets/video.mp4" autoplay loop controls width="800">
-  Your browser does not support the video tag.
-</video>
+https://github.com/user-attachments/assets/7aecdf37-5ed0-49fe-8add-7cb6b18e3eeb
 
 The model is trained on **64×64 CelebA images** with **capacity annealing** from the paper [Understanding Disentanglement in β-VAE](https://arxiv.org/pdf/1804.03599).
 
